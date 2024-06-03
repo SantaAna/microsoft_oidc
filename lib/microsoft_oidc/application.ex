@@ -10,7 +10,7 @@ defmodule MicrosoftOidc.Application do
     children = [
       {MicrosoftOidc.AuthNonce, []},
       {MicrosoftOidc.AuthState, []},
-      {MicrosoftOidc.MsftJwksStrategy, time_interval: 60 * 60}
+      {MicrosoftOidc.JwksStrategy, time_interval: 60 * 60}
     ]
 
     opts = [strategy: :one_for_one, name: MicrosoftOidc.Supervisor]
