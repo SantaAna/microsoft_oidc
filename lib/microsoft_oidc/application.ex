@@ -9,7 +9,8 @@ defmodule MicrosoftOidc.Application do
   def start(_type, _args) do
     children = [
       {MicrosoftOidc.AuthNonce, []},
-      {MicrosoftOidc.AuthState, []}
+      {MicrosoftOidc.AuthState, []},
+      {MicrosoftOidc.MsftJwksStrategy, time_interval: 60 * 60}
     ]
 
     opts = [strategy: :one_for_one, name: MicrosoftOidc.Supervisor]
