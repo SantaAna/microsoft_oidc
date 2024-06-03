@@ -5,7 +5,7 @@ defmodule MicrosoftOidc.Token do
   """
   use Joken.Config, default_signer: nil
 
-  add_hook(JokenJwks, strategy: Pento.MsftJwksStrategy)
+  add_hook(JokenJwks, strategy: MicrosoftOidc.JwksStrategy)
 
   @impl true
   def token_config() do
