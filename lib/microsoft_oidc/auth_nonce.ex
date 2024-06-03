@@ -13,19 +13,20 @@ defmodule MicrosoftOidc.AuthNonce do
   def init(_) do
     {:ok, MapSet.new()}
   end
-
+  
+  @spec generate() :: String.t()
   def generate() do
     value =
       :crypto.strong_rand_bytes(Application.get_env(:microsoft_oidc, :nonce_size, 10))
-      |> Base.encode64()
-      |> URI.encode()
-
+      |> Base.encode16()
+    
     timeout = Application.get_env(:microsoft_oidc, :nonce_timeout, 60 * 1_000)
     add(value)
     Process.send_after(self(), {:remove, value}, timeout)
     value
   end
-
+  
+  @spec validate(String.t()) :: boolean
   def validate(value) do
     if check(value) do
       remove(value)
@@ -35,7 +36,7 @@ defmodule MicrosoftOidc.AuthNonce do
     end
   end
 
-  def check(value) do
+  defp check(value) do
     GenServer.call(@m, {:check, value})
   end
 
@@ -43,7 +44,7 @@ defmodule MicrosoftOidc.AuthNonce do
     {:reply, MapSet.member?(state, value), state}
   end
 
-  def add(value) do
+  defp add(value) do
     GenServer.call(@m, {:add, value})
   end
 
@@ -51,7 +52,7 @@ defmodule MicrosoftOidc.AuthNonce do
     {:reply, :ok, MapSet.put(state, value)}
   end
 
-  def remove(value) do
+  defp remove(value) do
     GenServer.call(@m, {:remove, value})
   end
 
