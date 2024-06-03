@@ -6,6 +6,9 @@ defmodule MicrosoftOidc.Request do
   @login_base_url "https://login.microsoftonline.com/"
   @application_name :microsoft_oidc
 
+  @doc """
+  Creates a sign_in URL.  See MicrosoftOidc.initiate_request/0 for options.
+  """
   @spec sign_in_request_url(state :: String.t(), nonce :: String.t(), options :: Keyword.t()) ::
           url :: String.t()
   def sign_in_request_url(state, nonce, options \\ []) do
@@ -18,7 +21,7 @@ defmodule MicrosoftOidc.Request do
     ]
 
     opts = Keyword.merge(defaults, options)
-    URI.encode(request_url() <> "?" <> query_string(nonce, state, opts[:prompt]))
+    URI.encode(request_url() <> "?" <> query_string(nonce, state, opts))
   end
 
   defp request_url() do
@@ -36,7 +39,7 @@ defmodule MicrosoftOidc.Request do
       response_type: "id_token",
       nonce: nonce,
       state: state,
-      scope: "open_id"
+      scope: "openid"
     ]
 
     Keyword.merge(built_in, options)
