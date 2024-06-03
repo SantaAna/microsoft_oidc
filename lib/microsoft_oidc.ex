@@ -27,11 +27,13 @@ defmodule MicrosoftOidc do
   - tenant: the id of the AAD tenant defautls to the key application environment value under :microsoft_oidc :msft_tenant_id
   - redirect_uri: the URL that the user will be redirected to after completing OIDC flow. Defaults to the value under :microsoft_oidc :msft_redirect_uri
   """
-  @spec initiate_request(options :: Keyword.t()) :: request_url :: String.t()
-  def initiate_request(options \\ []) do
+  require Logger
+
+  @spec generate_url(options :: Keyword.t()) :: request_url :: String.t()
+  def generate_url(options \\ []) do
     nonce = MicrosoftOidc.AuthNonce.generate()
     state = MicrosoftOidc.AuthState.generate()
-
+    Logger.debug(%{state: state, nonce: nonce})
     MicrosoftOidc.Request.sign_in_request_url(state, nonce, options)
   end
 
